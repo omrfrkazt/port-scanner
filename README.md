@@ -6,5 +6,5 @@
 GOSCAN is open source port scanner tool
 
 # using
-this project still development
+this project still under development
 
