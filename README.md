@@ -1,3 +1,10 @@
 # port-scanner
 
-![image](https://user-images.githubusercontent.com/53657189/164788988-6621be8e-ab44-49aa-9a3a-b23f3534ad3a.png)
+![image](https://user-images.githubusercontent.com/53657189/164789085-94d9ea8e-b4c7-4719-b5b9-3c8f6b6baa6f.png)
+
+# information
+GOSCAN is open source port scanner tool
+
+# using
+this project still development
+
