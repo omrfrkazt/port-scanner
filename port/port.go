@@ -12,7 +12,7 @@ type ScanResult struct {
 }
 
 func ScanPort(protocol, hostname string, port int, channel *chan ScanResult) {
-	conn, err := net.DialTimeout(protocol, hostname+":"+strconv.Itoa(port), time.Second)
+	conn, err := net.DialTimeout(protocol, hostname+":"+strconv.Itoa(port), time.Second*1)
 	if err != nil {
 		model := ScanResult{strconv.Itoa(port), "CLOSED"}
 		*channel <- model
@@ -23,21 +23,15 @@ func ScanPort(protocol, hostname string, port int, channel *chan ScanResult) {
 	*channel <- model
 }
 
-func InitialScan(hostname string, start int, end int, mainChannel *chan []ScanResult) {
-	if start < 1 {
-		start = 1
-		end = 2
-	}
-	channel := make([]chan ScanResult, end)
+func InitialScan(hostname, protocol string, start, end int, mainChannel *chan []ScanResult) {
+	channel := make([]chan ScanResult, end-start+1)
 	for i := start; i <= end; i++ {
-		channel[i-1] = make(chan ScanResult)
+		channel[i-start] = make(chan ScanResult)
+		go ScanPort(protocol, hostname, i, &channel[i-start])
 	}
+	var result []ScanResult
 	for i := start; i <= end; i++ {
-		go ScanPort("tcp", hostname, i, &channel[i-1])
+		result = append(result, <-channel[i-start])
 	}
-	collection := make([]ScanResult, end)
-	for i, v := range channel {
-		collection[i] = <-v
-	}
-	*mainChannel <- collection
+	*mainChannel <- result
 }
