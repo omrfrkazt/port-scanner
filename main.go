@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"portScanner/port"
-	"time"
+	"portScanner/cmd"
 
 	"github.com/pterm/pterm"
 )
@@ -15,10 +13,5 @@ func main() {
 		pterm.NewLettersFromStringWithRGB("SCAN", pterm.NewRGB(253, 221, 0))).
 		Render()
 
-	channel := make(chan []port.ScanResult)
-	fmt.Println("Started: ", time.Now().Local().UTC())
-	go port.InitialScan("google.com", 1, 1024, &channel)
-
-	fmt.Println(<-channel)
-	fmt.Println("Finished: ", time.Now().Local().UTC())
+	cmd.Execute()
 }
