@@ -6,5 +6,6 @@
 GOSCAN is open source port scanner tool
 
 # using
-this project still in development
+Example:
+goScan -s 1 -e 65535 -a google.com
 
