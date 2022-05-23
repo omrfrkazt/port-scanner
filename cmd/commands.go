@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"portScanner/models"
 	"portScanner/port"
 	"time"
 
@@ -10,20 +11,29 @@ import (
 )
 
 func Execute() {
-	var hostname string
-	var start int
-	var end int
-	var protocol string
-	channel := make(chan []port.ScanResult)
+	var (
+		hostname string
+		protocol string
+		start    int
+		end      int
+	)
+	channel := make(chan models.AppResult)
+	//cobra tool is used to create a command line interface
+	//for details see https://cobra.dev/
 	goScanCmd := &cobra.Command{
 		Use:   "GOPORT",
 		Short: "simple port scanner",
 		Long:  `simple port scanner`,
 		Run: func(cmd *cobra.Command, args []string) {
+			if end > 65535 || start < 1 {
+				fmt.Println("Port range is must be between 1 and 65535")
+				os.Exit(1)
+			}
 			go port.InitialScan(hostname, protocol, start, end, &channel)
 			fmt.Println("Started: ", time.Now().Local().UTC())
-			fmt.Println(<-channel)
+			var result models.AppResult = <-channel
 			fmt.Println("Finished: ", time.Now().Local().UTC())
+			fmt.Println("Results saved to: ", result.FileName)
 		},
 	}
 
